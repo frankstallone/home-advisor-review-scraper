@@ -1,4 +1,5 @@
 import time
+import sys
 import requests
 import csv
 from bs4 import BeautifulSoup
@@ -10,23 +11,42 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from chromedriver_py import binary_path # this will get you the path variable
 
+# Home Advisor URL
+# Example: "https://www.homeadvisor.com/rated.InspectorSeltzer.51920579.html"
+URL = ""
+
+# Amount of pages
+# Example: 4
+PAGES = 0
+
+# Checking ot make sure variables exist
+if URL:
+    print('\n👍🏼 URL Variable exists\n')
+else:
+    print('\n🚨 URL Variable requied!\n')
+    sys.exit()
+if PAGES != 0:
+    print('\n👍🏼 PAGES Variable exists\n')
+else:
+    print('\n🚨 PAGES Variable requied!\n')
+    sys.exit()
+
 # webdriver options
 options = webdriver.ChromeOptions()
 options.add_argument('--ignore-certificate-errors')
 options.add_argument('--incognito')
 options.add_argument('--headless')
-# instantiate webdriver
+
+# initialize webdriver
 driver = webdriver.Chrome(executable_path=binary_path, options=options)
-driver.get("https://www.homeadvisor.com/rated.InspectorSeltzer.51920579.html")
-# instantiate csv
+driver.get(URL)
+
+# initialize csv
 outfile = open('reviews.csv', 'w', newline='')
 writer = csv.writer(outfile)
 writer.writerow(["author", "rating", "date", "review"])
 
-# Empty array for reviews
-reviews = []
-
-for x in range(4): 
+for x in range(PAGES): 
     # Wait 4 seconds for the DOM to update
     time.sleep(4)
     # Grab new DOM
@@ -41,26 +61,22 @@ for x in range(4):
         date = review_selector.find('span', attrs={'itemprop': 'datePublished'}).get_text()
         review = review_selector.find('span', attrs={'itemprop': 'reviewBody'}).get_text()
         
-        # # Clean whitespace
+        # Clean whitespace
         author = ''.join(content.strip() for content in author.split('/n'))
         rating = ''.join(content.strip() for content in rating.split('/n'))
         date = ''.join(content.strip() for content in date.split('/n'))
-        review = BeautifulSoup(''.join(content.strip() for content in review.split('/n')))
+        review = BeautifulSoup(''.join(content.strip() for content in review.split('/n')), 'html.parser' )
 
-        # # Save all data
+        # Save all data
         writer.writerow([author, rating, date, review])
-        # reviews.append(author)
-        # reviews.append(rating)
-        # reviews.append(date)
-        # reviews.append(review)
-    print("✅ Review saved")
+    print("✅ Page " + str(x+1) + "'s Page reviews saved\n")
     try:
-        # This only grabs the first pages profiles
-        # reviews_selector = soup.find_all('span', class_='reviewBody')
-        # print(reviews_selector)
+        # Find next button on reviews
         nextButton = driver.find_element_by_class_name("next")
+        # Click next button
         nextButton.click()
-        print("🖱 Mouse click to next review page")
-    except Exception: break
+        print("🖱 Mouse click to next review page\n")
+    except Exception as error:
+        print("🚨 Unable to find buttons to click next")
     
-# print(reviews)
+print("🙌🏼 Reviews saved to reviews.csv\n")
