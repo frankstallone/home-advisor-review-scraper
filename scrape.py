@@ -36,35 +36,31 @@ for x in range(4):
     for review_selector in reviews_selector:
 
         # Grab all data
-        test = review_selector.find('div', class_='profile-user-review-body').find('div', class_='t-heavy').get_text()
-        # for string in test.strings:
-        #     print(repr(string))
-        test2 = test.replace("\n", "")
-        test3 = ''.join(content.strip() for content in test2.split('/n'))
-        print(test3)
-        # author = review_selector.find('span', attrs={'itemprop': 'author'}).get_text()
-        # rating = review_selector.find('span', attrs={'itemprop': 'reviewRating'}).get_text()
-        # date = review_selector.find('span', attrs={'itemprop': 'datePublished'}).get_text()
-        # review = review_selector.find('span', attrs={'itemprop': 'reviewBody'}).get_text()
+        author = review_selector.find('span', attrs={'itemprop': 'author'}).get_text()
+        rating = review_selector.find('span', attrs={'itemprop': 'reviewRating'}).get_text()
+        date = review_selector.find('span', attrs={'itemprop': 'datePublished'}).get_text()
+        review = review_selector.find('span', attrs={'itemprop': 'reviewBody'}).get_text()
         
         # # Clean whitespace
-        # author = ''.join(content.strip() for content in author.split('/n'))
-        # rating = ''.join(content.strip() for content in rating.split('/n'))
-        # date = ''.join(content.strip() for content in date.split('/n'))
-        # review = ''.join(content.strip() for content in review.split('/n'))
+        author = ''.join(content.strip() for content in author.split('/n'))
+        rating = ''.join(content.strip() for content in rating.split('/n'))
+        date = ''.join(content.strip() for content in date.split('/n'))
+        review = BeautifulSoup(''.join(content.strip() for content in review.split('/n')))
 
         # # Save all data
+        writer.writerow([author, rating, date, review])
         # reviews.append(author)
         # reviews.append(rating)
-        # print(author)
-    print("For completed")
+        # reviews.append(date)
+        # reviews.append(review)
+    print("✅ Review saved")
     try:
         # This only grabs the first pages profiles
         # reviews_selector = soup.find_all('span', class_='reviewBody')
         # print(reviews_selector)
         nextButton = driver.find_element_by_class_name("next")
         nextButton.click()
-        print("Completed click")
+        print("🖱 Mouse click to next review page")
     except Exception: break
     
 # print(reviews)
