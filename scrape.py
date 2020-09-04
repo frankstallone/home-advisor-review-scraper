@@ -23,11 +23,11 @@ def argument_parser():
         reviews'
     )
     parser.add_argument(
-        '-u', '--url', dest='url', action='store',
+        '-u', '--url', dest='url', action='store', required=True,
         help='A target HomeAdvisor URL to scan for data'
     )
     parser.add_argument(
-        '-p', '--pages', dest='pages', action='store', type=int,
+        '-p', '--pages', dest='pages', action='store', type=int, required=True,
         help='Number of pages of review to scan'
     )
     return parser.parse_args()
