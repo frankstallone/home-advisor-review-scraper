@@ -1,3 +1,4 @@
+#! /usr/local/bin/python3
 import csv
 import sys
 import time
@@ -19,12 +20,13 @@ class ErrorCodes(object):
 
 def argument_parser():
     parser = argparse.ArgumentParser(
-        description='Given a HomeAdvisor URL, scrapes the page for associated
-        reviews'
+        formatter_class=argparse.RawTextHelpFormatter,
+        description="Given a HomeAdvisor URL, scrapes the page for associated reviews"
+                    "\nExample: https://www.homeadvisor.com/rated.InspectorSeltzer.51920579.html"
     )
     parser.add_argument(
         '-u', '--url', dest='url', action='store', required=True,
-        help='A target HomeAdvisor URL to scan for data'
+        help="A target HomeAdvisor URL to scan for data"
     )
     parser.add_argument(
         '-p', '--pages', dest='pages', action='store', type=int, required=True,
